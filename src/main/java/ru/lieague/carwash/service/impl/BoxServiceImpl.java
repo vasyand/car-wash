@@ -3,6 +3,7 @@ package ru.lieague.carwash.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.lieague.carwash.exception.FreeBoxIsAbsent;
 import ru.lieague.carwash.model.entity.Box;
 import ru.lieague.carwash.model.entity.CarWashService;
 import ru.lieague.carwash.model.filter.BoxFilter;
@@ -27,8 +28,9 @@ public class BoxServiceImpl implements BoxService {
     }
 
     @Override
-    public Box findTheBestBoxForCarWashServiceAtTime(CarWashService carWashService, LocalDateTime time) {
-        return boxRepository.getBestBoxAtThisTime(carWashService.getDuration(), time).get();
+    public Box findTheBestBoxForCarWashServiceAtTime(Integer standardWashDuration, LocalDateTime time) {
+        return boxRepository.getBestBoxAtThisTime(standardWashDuration, time)
+                .orElseThrow(() -> new FreeBoxIsAbsent("Свободный бокс на это время отсутствует"));
     }
 
 
