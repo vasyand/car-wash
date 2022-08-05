@@ -3,6 +3,7 @@ package ru.lieague.carwash.model.entity;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -19,9 +20,9 @@ public class Box {
 
     private Double coefficient;
 
-    private Integer startWorking;
+    private LocalTime startWorking;
 
-    private Integer endWorking;
+    private LocalTime endWorking;
 
     @OneToMany(mappedBy = "box")
     List<Booking> bookingList;
