@@ -1,29 +1,16 @@
-package ru.lieague.carwash.model.entity;
+package ru.lieague.carwash.model.dto.box;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.LocalTime;
-import java.util.List;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "boxes")
-public class Box {
-
-    @Id
-    private Long id;
+public class BoxCreateDto {
     private String name;
-
-    @OneToOne
-    private User operator;
-
+    private Long operatorId;
     private Double coefficient;
-
     private LocalTime startWorking;
-
     private LocalTime endWorking;
-
 }

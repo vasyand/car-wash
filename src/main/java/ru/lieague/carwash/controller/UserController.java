@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-import ru.lieague.carwash.model.dto.UserCreateDto;
-import ru.lieague.carwash.model.dto.UserFullDto;
-import ru.lieague.carwash.model.dto.UserUpdateDto;
+import ru.lieague.carwash.model.dto.user.*;
 import ru.lieague.carwash.model.filter.UserFilter;
 import ru.lieague.carwash.service.UserService;
 
@@ -42,6 +40,20 @@ public class UserController {
     public UserFullDto update(@RequestBody UserUpdateDto userUpdateDto,
                              @PathVariable Long id) {
         return userService.update(userUpdateDto, id);
+    }
+
+    @ResponseStatus(OK)
+    @PutMapping("/{id}/role")
+    public UserFullDto changeUserRole(@RequestBody UserChangeRoleDto userChangeRoleDto,
+                                      @PathVariable Long id) {
+        return userService.changeRole(userChangeRoleDto, id);
+    }
+
+    @ResponseStatus(OK)
+    @PutMapping("/{id}/discount")
+    public UserFullDto setDiscount(@RequestBody UserSetDiscountDto userSetDiscountDto,
+                                   @PathVariable Long id) {
+        return userService.setDiscount(userSetDiscountDto, id);
     }
 
     @ResponseStatus(OK)

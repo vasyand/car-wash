@@ -5,12 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.lieague.carwash.Constants;
+import ru.lieague.carwash.exception.EntityNotFoundException;
 import ru.lieague.carwash.mapper.BookingMapper;
-import ru.lieague.carwash.model.BookingStatus;
 import ru.lieague.carwash.model.TimeInterval;
-import ru.lieague.carwash.model.dto.*;
-import ru.lieague.carwash.model.entity.*;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceFullDto;
+import ru.lieague.carwash.model.dto.booking.*;
+import ru.lieague.carwash.model.dto.box.BoxFullDto;
+import ru.lieague.carwash.model.dto.user.UserFullDto;
+import ru.lieague.carwash.model.entity.Booking;
+import ru.lieague.carwash.model.entity.Booking_;
+import ru.lieague.carwash.model.entity.Box;
 import ru.lieague.carwash.model.filter.BookingFilter;
 import ru.lieague.carwash.repository.BookingRepository;
 import ru.lieague.carwash.service.BookingService;
@@ -19,16 +23,16 @@ import ru.lieague.carwash.service.CarWashServiceService;
 import ru.lieague.carwash.service.UserService;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import static java.lang.Math.*;
-import static ru.lieague.carwash.Constants.*;
-import static ru.lieague.carwash.model.BookingStatus.*;
+import static java.lang.Math.round;
+import static java.lang.String.format;
+import static ru.lieague.carwash.Constants.WORKING_DAY_END_HOUR;
+import static ru.lieague.carwash.Constants.WORKING_DAY_START_HOUR;
+import static ru.lieague.carwash.model.BookingStatus.NOT_CONFIRMED;
 import static ru.lieague.carwash.specification.BookingSpecification.findBookingByDay;
 
 @Service
@@ -38,34 +42,40 @@ public class BookingServiceImpl implements BookingService {
     private final BoxService boxService;
     private final UserService userService;
     private final CarWashServiceService carWashServiceService;
-
     private final BookingMapper bookingMapper;
 
     @Override
     public BookingFullDto findById(Long id) {
-        return null;
+        return bookingMapper.bookingToBookingFullDto(findBookingByIdOrThrowException(id));
     }
 
     @Override
     public Page<BookingFullDto> findAll(Pageable pageable, BookingFilter bookingFilter) {
-        return null;
-    }
-
-    @Override
-    public BookingFullDto update(BookingUpdateDto bookingUpdateDto, Long id) {
-        return null;
-    }
-
-    @Override
-    public Long delete(Long id) {
-        return null;
+        return bookingRepository.findAll(pageable)
+                .map(bookingMapper::bookingToBookingFullDto);
     }
 
     @Override
     @Transactional
-    public List<TimeInterval> getBookingFreeTimeIntervalsForCarWashServiceOnDay(Long carWashServiceId, LocalDate day) {
-        List<Booking> bookings = bookingRepository.findAll(findBookingByDay(day), Sort.by(Booking_.WASHING_START_TIME));
-        CarWashServiceFullDto carWashService = carWashServiceService.findById(carWashServiceId);
+    public Long delete(Long id) {
+        Booking booking = findBookingByIdOrThrowException(id);
+        bookingRepository.delete(booking);
+        return booking.getId();
+    }
+
+    private Booking findBookingByIdOrThrowException(Long id) {
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(format("Брони с id %s не существует", id)));
+    }
+
+    @Override
+    @Transactional
+    public List<TimeInterval> getBookingFreeTimeIntervalsForCarWashServiceOnDay(BookingGetFreeTimesDto bookingGetFreeTimesDto) {
+        List<Booking> bookings = bookingRepository.findAll(
+                findBookingByDay(bookingGetFreeTimesDto.getDay()),
+                Sort.by(Booking_.WASHING_START_TIME)
+        );
+        CarWashServiceFullDto carWashService = carWashServiceService.findById(bookingGetFreeTimesDto.getCarWashServiceId());
         List<TimeInterval> intervals = new ArrayList<>();
         LocalTime startIntervalFreeTime = WORKING_DAY_START_HOUR;
 
@@ -83,9 +93,24 @@ public class BookingServiceImpl implements BookingService {
         return intervals;
     }
 
+
     @Override
     @Transactional
-    public BookingFullDto create(BookingCreateDto bookingCreateDto) {
+    public BookingFullDto update(BookingUpdateDto bookingUpdateDto, Long id) {
+        findBookingByIdOrThrowException(id);
+        Booking booking = createBooking(bookingMapper.bookingUpdateDtoToBookingCreateDto(bookingUpdateDto));
+        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(booking));
+    }
+
+    @Override
+    @Transactional
+    public BookingFullDto save(BookingCreateDto bookingCreateDto) {
+        Booking booking = createBooking(bookingCreateDto);
+        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(booking));
+    }
+
+
+    private Booking createBooking(BookingCreateDto bookingCreateDto) {
         CarWashServiceFullDto carWashServiceDto = carWashServiceService.findById(bookingCreateDto.getCarWashServiceId());
         UserFullDto userDto = userService.findById(bookingCreateDto.getUserId());
         BoxFullDto boxDto = boxService
@@ -93,15 +118,7 @@ public class BookingServiceImpl implements BookingService {
                         carWashServiceDto.getDuration(), bookingCreateDto.getBookingTime()
                 );
 
-        Booking booking = new Booking();
-
-        CarWashService carWashServiceEntity = new CarWashService();
-        carWashServiceEntity.setId(carWashServiceDto.getId());
-        booking.setCarWashService(carWashServiceEntity);
-
-        User user = new User();
-        user.setId(userDto.getId());
-        booking.setUser(user);
+        Booking booking = bookingMapper.bookingCreateDtoToBooking(bookingCreateDto);
 
         Box boxEntity = new Box();
         boxEntity.setId(boxDto.getId());
@@ -117,12 +134,9 @@ public class BookingServiceImpl implements BookingService {
 
         LocalDateTime washingEndTime = bookingCreateDto.getBookingTime()
                 .plusMinutes(round(boxEntity.getCoefficient() * carWashServiceDto.getDuration()));
-        booking.setWashingStartTime(bookingCreateDto.getBookingTime());
         booking.setWashingEndTime(washingEndTime);
 
-        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(booking));
+        return booking;
     }
-
-
 }
 

@@ -2,10 +2,9 @@ package ru.lieague.carwash.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.lieague.carwash.model.dto.CarWashServiceCreateDto;
-import ru.lieague.carwash.model.dto.CarWashServiceFullDto;
-import ru.lieague.carwash.model.dto.CarWashServiceUpdateDto;
-import ru.lieague.carwash.model.entity.CarWashService;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceCreateDto;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceFullDto;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceUpdateDto;
 import ru.lieague.carwash.model.filter.CarWashServiceFilter;
 
 public interface CarWashServiceService {

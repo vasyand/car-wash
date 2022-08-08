@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.lieague.carwash.model.CarWashServiceType;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 
 @Entity
 @Getter
@@ -19,8 +21,4 @@ public class CarWashService {
     private Integer duration;
     private String description;
     private Double cost;
-
-    @OneToMany(mappedBy = "carWashService")
-    List<Booking> bookingList;
-
 }

@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import ru.lieague.carwash.exception.EntityNotFoundException;
 import ru.lieague.carwash.exception.FreeBoxNotFoundException;
 import ru.lieague.carwash.mapper.BoxMapper;
-import ru.lieague.carwash.model.dto.BoxCreateDto;
-import ru.lieague.carwash.model.dto.BoxFullDto;
-import ru.lieague.carwash.model.dto.BoxUpdateDto;
+import ru.lieague.carwash.model.dto.box.BoxCreateDto;
+import ru.lieague.carwash.model.dto.box.BoxFullDto;
+import ru.lieague.carwash.model.dto.box.BoxUpdateDto;
 import ru.lieague.carwash.model.entity.Box;
 import ru.lieague.carwash.model.filter.BoxFilter;
 import ru.lieague.carwash.repository.BoxRepository;
+import ru.lieague.carwash.repository.UserRepository;
 import ru.lieague.carwash.service.BoxService;
 
 import javax.transaction.Transactional;
@@ -24,6 +25,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class BoxServiceImpl implements BoxService {
     private final BoxRepository boxRepository;
+    private final UserRepository userRepository;
     private final BoxMapper boxMapper;
 
     @Override
@@ -57,6 +59,7 @@ public class BoxServiceImpl implements BoxService {
     public BoxFullDto update(BoxUpdateDto boxUpdateDto, Long id) {
         Box box = findBoxByIdOrThrowException(id);
         boxMapper.boxUpdateDtoMergeWithBox(boxUpdateDto, box);
+        userRepository.findById(box.getOperator().getId());
         return boxMapper.boxToBoxFullDto(boxRepository.save(box));
     }
 

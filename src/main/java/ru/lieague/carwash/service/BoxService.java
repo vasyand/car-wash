@@ -2,10 +2,9 @@ package ru.lieague.carwash.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ru.lieague.carwash.model.dto.BoxCreateDto;
-import ru.lieague.carwash.model.dto.BoxFullDto;
-import ru.lieague.carwash.model.dto.BoxUpdateDto;
-import ru.lieague.carwash.model.entity.Box;
+import ru.lieague.carwash.model.dto.box.BoxCreateDto;
+import ru.lieague.carwash.model.dto.box.BoxFullDto;
+import ru.lieague.carwash.model.dto.box.BoxUpdateDto;
 import ru.lieague.carwash.model.filter.BoxFilter;
 
 import java.time.LocalDateTime;

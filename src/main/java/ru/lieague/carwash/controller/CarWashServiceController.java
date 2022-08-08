@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-import ru.lieague.carwash.model.dto.CarWashServiceCreateDto;
-import ru.lieague.carwash.model.dto.CarWashServiceFullDto;
-import ru.lieague.carwash.model.dto.CarWashServiceUpdateDto;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceCreateDto;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceFullDto;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceUpdateDto;
 import ru.lieague.carwash.model.filter.CarWashServiceFilter;
 import ru.lieague.carwash.service.CarWashServiceService;
 
