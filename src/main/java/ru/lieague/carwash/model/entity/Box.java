@@ -1,6 +1,7 @@
 package ru.lieague.carwash.model.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "boxes")
 public class Box {
 
