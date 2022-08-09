@@ -2,15 +2,22 @@ spring:
   datasource:
     username: test
     password: test
-    url: jdbc:postgresql://host.docker.internal:5432/test
+    url: jdbc:postgresql://localhost:5432/test
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
-    enabled: true
+    enabled: false
     schemas: public
+
+job:
+  rate-for-check-booking-job: 300000
+
+booking:
+  minutes-before-start-washing-if-user-has-not-confirmed-booking: 15
+  minutes-after-creating-booking-without-confirming: 15

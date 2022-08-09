@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import ru.lieague.carwash.exception.EntityNotFoundException;
 import ru.lieague.carwash.mapper.BookingMapper;
 import ru.lieague.carwash.model.TimeInterval;
-import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceFullDto;
 import ru.lieague.carwash.model.dto.booking.*;
 import ru.lieague.carwash.model.dto.box.BoxFullDto;
+import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceFullDto;
 import ru.lieague.carwash.model.dto.user.UserFullDto;
 import ru.lieague.carwash.model.entity.Booking;
 import ru.lieague.carwash.model.entity.Booking_;
@@ -27,12 +27,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 import static java.lang.String.format;
 import static ru.lieague.carwash.Constants.WORKING_DAY_END_HOUR;
 import static ru.lieague.carwash.Constants.WORKING_DAY_START_HOUR;
-import static ru.lieague.carwash.model.BookingStatus.NOT_CONFIRMED;
+import static ru.lieague.carwash.model.BookingStatus.*;
 import static ru.lieague.carwash.specification.BookingSpecification.findBookingByDay;
 
 @Service
@@ -63,9 +64,25 @@ public class BookingServiceImpl implements BookingService {
         return booking.getId();
     }
 
+
     private Booking findBookingByIdOrThrowException(Long id) {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(format("Брони с id %s не существует", id)));
+    }
+
+    @Override
+    public BookingFullDto changeStatus(BookingChangeStatusDto bookingChangeStatusDto, Long id) {
+        Booking booking = findBookingByIdOrThrowException(id);
+        booking.setBookingStatus(bookingChangeStatusDto.getBookingStatus());
+        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(booking));
+    }
+
+    @Override
+    @Transactional
+    public BookingFullDto confirmBooking(Long id) {
+        Booking booking = findBookingByIdOrThrowException(id);
+        booking.setBookingStatus(ACTIVE);
+        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(booking));
     }
 
     @Override
@@ -97,9 +114,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingFullDto update(BookingUpdateDto bookingUpdateDto, Long id) {
-        findBookingByIdOrThrowException(id);
-        Booking booking = createBooking(bookingMapper.bookingUpdateDtoToBookingCreateDto(bookingUpdateDto));
-        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(booking));
+        Booking oldBooking = findBookingByIdOrThrowException(id);
+        oldBooking.setBookingStatus(CANCELED);
+        bookingRepository.save(oldBooking);
+        Booking newBooking = createBooking(bookingMapper.bookingUpdateDtoToBookingCreateDto(bookingUpdateDto));
+        newBooking.setId(id);
+        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(newBooking));
     }
 
     @Override

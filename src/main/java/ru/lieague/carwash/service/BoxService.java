@@ -8,6 +8,7 @@ import ru.lieague.carwash.model.dto.box.BoxUpdateDto;
 import ru.lieague.carwash.model.filter.BoxFilter;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface BoxService {
     BoxFullDto findById(Long id);

@@ -11,8 +11,11 @@ import ru.lieague.carwash.model.entity.User;
 import ru.lieague.carwash.model.filter.UserFilter;
 import ru.lieague.carwash.repository.UserRepository;
 import ru.lieague.carwash.service.UserService;
+import ru.lieague.carwash.specification.UserSpecification;
 
 import javax.transaction.Transactional;
+
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static ru.lieague.carwash.model.UserRole.USER;
@@ -26,6 +29,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserFullDto findById(Long id) {
         return userMapper.userToUserFullDto(findUserByIdOrThrowException(id));
+    }
+
+    @Override
+    public Optional<UserFullDto> findByEmail(String email) {
+        return userRepository.findOne(UserSpecification.findByEmail(email))
+                .map(userMapper::userToUserFullDto);
     }
 
     @Override
@@ -46,7 +55,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long delete(Long id) {
         User user = findUserByIdOrThrowException(id);
-        userRepository.delete(user);
+        user.setEnabled(false);
+        userRepository.save(user);
         return user.getId();
     }
 
@@ -65,6 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserFullDto update(UserUpdateDto userUpdateDto, Long id) {
         User user = findUserByIdOrThrowException(id);
         userMapper.userUpdateDtoMergeWithUser(userUpdateDto, user);

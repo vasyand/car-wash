@@ -3,6 +3,7 @@ package ru.lieague.carwash.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.lieague.carwash.model.dto.box.BoxCreateDto;
 import ru.lieague.carwash.model.dto.box.BoxFullDto;
@@ -21,6 +22,7 @@ public class BoxController {
 
     @ResponseStatus(OK)
     @GetMapping("/{id}")
+    @PreAuthorize("@boxControllerAccessValidator.canTheCurrentUserViewThisBox(#id)")
     public BoxFullDto findById(@PathVariable Long id) {
         return boxService.findById(id);
     }

@@ -18,6 +18,10 @@ public interface BookingService {
 
     Long delete(Long id);
 
+    BookingFullDto confirmBooking(Long id);
+
+    BookingFullDto changeStatus(BookingChangeStatusDto bookingChangeStatusDto, Long id);
+
     List<TimeInterval> getBookingFreeTimeIntervalsForCarWashServiceOnDay(BookingGetFreeTimesDto bookingGetFreeTimesDto);
     BookingFullDto save(BookingCreateDto bookingCreateDto);
 }

@@ -21,13 +21,13 @@ public class CarWashApplication {
 	}
 
 
-	@Bean
-	CommandLineRunner run() {
-		return args -> {
-			LocalDateTime date = LocalDateTime.of(2022, 8, 5, 15,35,0);
-			Box box = boxRepository.getBestBoxAtThisTime(15, date).get();
-			System.out.println(box.getId());
-		};
-	}
+//	@Bean
+//	CommandLineRunner run() {
+//		return args -> {
+//			LocalDateTime date = LocalDateTime.of(2022, 8, 5, 15,35,0);
+//			Box box = boxRepository.getBestBoxAtThisTime(15, date).get();
+//			System.out.println(box.getId());
+//		};
+//	}
 
 }

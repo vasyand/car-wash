@@ -2,10 +2,11 @@ insert into boxes values
 (1, 1.5, '20:00:00', 'sobox', '12:00:00', null),
 (2, 1.0, '16:00:00', 'box', '08:00:00', null),
 (3, 2, '24:00:00', 'superbox', '18:00:00', null),
+(5, 18, '24:00:00', 'superbox', '19:00:00', null),
 (4, 0.5, '20:00:00', 'slowbox', '12:00:00', null);
 
 insert into users values
-                      (1);
+                      (1, 0.15, 'Kiriluk_v_r@mail.ru', 'dd', true, 'dfdffd', 'fdfdfd', 'fdfddfdf', 'admin', 'ADMIN');
 
 insert into car_wash_service values
                                  (1,'LUXE', 15, 'top washing', 15);

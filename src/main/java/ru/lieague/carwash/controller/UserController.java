@@ -3,10 +3,13 @@ package ru.lieague.carwash.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.lieague.carwash.model.dto.user.*;
 import ru.lieague.carwash.model.filter.UserFilter;
 import ru.lieague.carwash.service.UserService;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -19,6 +22,7 @@ public class UserController {
 
     @ResponseStatus(OK)
     @GetMapping("/{id}")
+    @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserViewThisUser(#id)")
     public UserFullDto findById(@PathVariable Long id) {
         return userService.findById(id);
     }
@@ -37,6 +41,7 @@ public class UserController {
 
     @ResponseStatus(OK)
     @PutMapping("/{id}")
+    @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserViewThisUser(#id)")
     public UserFullDto update(@RequestBody UserUpdateDto userUpdateDto,
                              @PathVariable Long id) {
         return userService.update(userUpdateDto, id);
@@ -51,13 +56,15 @@ public class UserController {
 
     @ResponseStatus(OK)
     @PutMapping("/{id}/discount")
-    public UserFullDto setDiscount(@RequestBody UserSetDiscountDto userSetDiscountDto,
+    @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserSetDiscount()")
+    public UserFullDto setDiscount(@RequestBody @Valid UserSetDiscountDto userSetDiscountDto,
                                    @PathVariable Long id) {
         return userService.setDiscount(userSetDiscountDto, id);
     }
 
     @ResponseStatus(OK)
     @DeleteMapping("/{id}")
+    @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserViewThisUser(#id)")
     public Long delete(@PathVariable Long id) {
         return userService.delete(id);
     }

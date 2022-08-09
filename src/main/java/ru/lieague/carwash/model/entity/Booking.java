@@ -2,6 +2,7 @@ package ru.lieague.carwash.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import ru.lieague.carwash.model.BookingStatus;
 
 import javax.persistence.*;
@@ -19,6 +20,10 @@ public class Booking {
     private Double cost;
     @Enumerated(EnumType.STRING)
     private BookingStatus bookingStatus;
+
+    @CreationTimestamp
+    @Column(name = "create_date")
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

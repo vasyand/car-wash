@@ -24,6 +24,7 @@ public class User {
     private String mobile;
     private String password;
     private Double discount;
+    private boolean isEnabled;
 
     @Enumerated(STRING)
     private UserRole role;

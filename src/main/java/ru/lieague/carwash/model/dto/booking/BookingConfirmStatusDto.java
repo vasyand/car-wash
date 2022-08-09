@@ -4,15 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class BookingCreateDto {
+public class BookingConfirmStatusDto {
     @NotBlank
     private Long userId;
-    @NotBlank
-    private Long carWashServiceId;
-    @NotBlank
-    private LocalDateTime bookingTime;
 }

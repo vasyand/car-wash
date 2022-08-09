@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface BoxRepository extends JpaRepository<Box, Long> {
 
     /**
-     * Запрос сначала ищет боксы, которые могут выполнить данную услугу во время {@code time},
-     * затем из этих боксов выбирается тот, который быстрее всех сделает эту услугу.
+     * Запрос сначала ищет боксы, которые не смогут выполнить данную услугу во время {@code time},
+     * затем выбирает боксы, которые не входят в список занятых, и выбирает из них лучший.
      *
      * Проверки:
      * - смотрим брони только в нужный день
@@ -23,15 +23,18 @@ public interface BoxRepository extends JpaRepository<Box, Long> {
      * @param time             - время, запрошенное пользователем для брони
      * @return лучший свободный бокс, способный выполнить указанную услугу в данное время
      */
-    @Query(nativeQuery = true, value = "select * from boxes box " +
-            "         inner join booking b on box.id = b.box_id " +
-            "where (date (:time) = date (b.washing_start_time))" +
-            " and (:time between box.start_working and box.end_working)" +
-            " and (b.washing_start_time not between date (:time) " +
-            "  + box.coefficient * :duration * interval '1 minute' and :time) " +
-            " and (b.washing_end_time not between date (:time) " +
-            "  + box.coefficient * :duration * interval '1 minute' and :time) " +
-            "order by coefficient desc " +
+    @Query(nativeQuery = true, value = "select * " +
+            "from boxes box " +
+            "where box.id not in (select box.id" +
+            "      from boxes box" +
+            "      inner join booking b on box.id = b.box_id" +
+            "      where (date(:time) = date(b.washing_start_time)" +
+            "         and (b.booking_status = 'ACTIVE' or b.booking_status = 'PAID')" +
+            "         and ((:time not between box.start_working and box.end_working)" +
+            "           or (time_pl_interval(:time, make_interval(secs \\:= box.coefficient * :duration * 60)) > box.end_working)" +
+            "           or (timestamp_pl_interval(:time, make_interval(secs \\:= box.coefficient * :duration * 60)) between b.washing_start_time and b.washing_end_time)" +
+            "           or (:time between b.washing_start_time and b.washing_end_time))))" +
+            "order by box.coefficient desc " +
             "limit 1")
     Optional<Box> getBestBoxAtThisTime(@Param("duration") Integer standardDuration,
                                        @Param("time") LocalDateTime time);

@@ -5,8 +5,11 @@ import org.springframework.data.domain.Pageable;
 import ru.lieague.carwash.model.dto.user.*;
 import ru.lieague.carwash.model.filter.UserFilter;
 
+import java.util.Optional;
+
 public interface UserService {
     UserFullDto findById(Long id);
+    Optional<UserFullDto> findByEmail(String email);
     UserFullDto save(UserCreateDto userCreateDto);
     UserFullDto update(UserUpdateDto userUpdateDto, Long id);
     UserFullDto changeRole(UserChangeRoleDto userChangeRoleDto, Long id);

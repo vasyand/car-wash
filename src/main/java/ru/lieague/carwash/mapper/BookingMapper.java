@@ -32,8 +32,7 @@ public interface BookingMapper {
 
     BookingCreateDto bookingUpdateDtoToBookingCreateDto(BookingUpdateDto bookingUpdateDto);
 
-    @Mapping(target = "washingStartTime", nullValuePropertyMappingStrategy = IGNORE)
-    @Mapping(target = "bookingStatus", nullValuePropertyMappingStrategy = IGNORE)
+    @Mapping(target = "washingStartTime", source = "bookingTime", nullValuePropertyMappingStrategy = IGNORE)
     @Mapping(target = "carWashService", source = "carWashServiceId",
             qualifiedByName = "createCarWashServiceWithId", nullValuePropertyMappingStrategy = IGNORE)
     Booking bookingUpdateDtoMergeWithBooking(BookingUpdateDto bookingUpdateDto, @MappingTarget Booking booking);
