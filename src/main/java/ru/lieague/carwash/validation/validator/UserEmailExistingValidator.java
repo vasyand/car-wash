@@ -13,7 +13,7 @@ public class UserEmailExistingValidator implements ConstraintValidator<EmailIsNo
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return userService.findByEmail(value).isEmpty();
+        return userService.findByEmail(value).isPresent();
     }
 
 }

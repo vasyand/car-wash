@@ -51,14 +51,14 @@ public class BookingController {
 
     @ResponseStatus(OK)
     @PutMapping("/{id}")
-    @PreAuthorize("@bookingControllerAccessValidator.thisBookingBelongToCurrentUser(#id)")
+    @PreAuthorize("@bookingControllerAccessValidator.thisBookingIsUpdatingCurrentUser(#id)")
     public BookingFullDto update(@RequestBody BookingUpdateDto bookingUpdateDto,
                                     @PathVariable Long id) {
         return bookingService.update(bookingUpdateDto, id);
     }
 
     @ResponseStatus(OK)
-    @PutMapping("/{id}/confirm-status")
+    @PutMapping("/{id}/confirm")
     @PreAuthorize("@bookingControllerAccessValidator.thisBookingIsConfirmingCurrentUser(#bookingConfirmStatusDto, #id)")
     public BookingFullDto confirm(@RequestBody @Valid BookingConfirmStatusDto bookingConfirmStatusDto,
                                              @PathVariable Long id) {

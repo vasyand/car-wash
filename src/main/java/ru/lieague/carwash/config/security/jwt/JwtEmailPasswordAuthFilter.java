@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import ru.lieague.carwash.config.security.UsernamePasswordAuthDto;
+import ru.lieague.carwash.config.security.EmailPasswordAuthDto;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -16,12 +16,12 @@ import java.io.IOException;
 import static ru.lieague.carwash.Constants.*;
 
 
-public class JwtUsernamePasswordAuthFilter extends AbstractAuthenticationProcessingFilter {
+public class JwtEmailPasswordAuthFilter extends AbstractAuthenticationProcessingFilter {
     private final JwtTokenGenerator jwtTokenGenerator;
 
     private final AuthenticationManager authenticationManager;
 
-    public JwtUsernamePasswordAuthFilter(AuthenticationManager authenticationManager, JwtTokenGenerator jwtTokenGenerator) {
+    public JwtEmailPasswordAuthFilter(AuthenticationManager authenticationManager, JwtTokenGenerator jwtTokenGenerator) {
         super("/api/v1/auth");
         this.authenticationManager = authenticationManager;
         this.jwtTokenGenerator = jwtTokenGenerator;
@@ -31,7 +31,7 @@ public class JwtUsernamePasswordAuthFilter extends AbstractAuthenticationProcess
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
 
-            UsernamePasswordAuthDto authRequest = parseToUsernamePasswordRequest(request);
+            EmailPasswordAuthDto authRequest = parseToUsernamePasswordRequest(request);
             Authentication auth = new UsernamePasswordAuthenticationToken(
                     authRequest.getUsername(),
                     authRequest.getPassword()
@@ -52,10 +52,10 @@ public class JwtUsernamePasswordAuthFilter extends AbstractAuthenticationProcess
         response.addHeader(REFRESH_TOKEN_HEADER, BEARER_PARAMETER + refreshToken);
     }
 
-    private UsernamePasswordAuthDto parseToUsernamePasswordRequest(HttpServletRequest request) {
+    private EmailPasswordAuthDto parseToUsernamePasswordRequest(HttpServletRequest request) {
         try {
             return new ObjectMapper()
-                    .readValue(request.getInputStream(), UsernamePasswordAuthDto.class);
+                    .readValue(request.getInputStream(), EmailPasswordAuthDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -21,6 +21,6 @@ public class BoxControllerAccessValidator {
         Long userId = box.getOperatorId();
         UserSecurity user = getCurrentUser();
         return user.getRole() == ADMIN
-                || (user.getRole() == OPERATOR && user.getId().equals(userId));
+                || user.getId().equals(userId);
     }
 }

@@ -26,7 +26,7 @@ public interface BoxRepository extends JpaRepository<Box, Long>, JpaSpecificatio
      */
     @Query(nativeQuery = true, value = "select * " +
             "from boxes box " +
-            "where box.id not in (select box.id" +
+            "where box.is_worked and box.id not in (select box.id" +
             "      from boxes box" +
             "      inner join booking b on box.id = b.box_id" +
             "      where (date(:time) = date(b.washing_start_time)" +

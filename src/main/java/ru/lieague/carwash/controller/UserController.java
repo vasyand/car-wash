@@ -56,7 +56,6 @@ public class UserController {
 
     @ResponseStatus(OK)
     @PutMapping("/{id}/discount")
-    @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserSetDiscount()")
     public UserGetDto setDiscount(@RequestBody @Valid UserSetDiscountDto userSetDiscountDto,
                                    @PathVariable Long id) {
         return userService.setDiscount(userSetDiscountDto, id);

@@ -26,4 +26,6 @@ public class Box {
 
     private LocalTime endWorking;
 
+    private boolean isWorked;
+
 }

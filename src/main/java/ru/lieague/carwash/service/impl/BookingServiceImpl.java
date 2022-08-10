@@ -22,6 +22,7 @@ import ru.lieague.carwash.repository.BookingRepository;
 import ru.lieague.carwash.service.*;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -100,17 +101,25 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public List<TimeInterval> getBookingFreeTimeIntervalsForCarWashServiceOnDay(BookingGetFreeTimesDto bookingGetFreeTimesDto) {
-        List<Booking> bookings = bookingRepository.findAll(
-                findBookingByDay(bookingGetFreeTimesDto.getDay()),
+        List<Booking> bookings = getBookingsOnDay(bookingGetFreeTimesDto.getDay());
+        CarWashServiceFullDto carWashService = carWashServiceService.findById(bookingGetFreeTimesDto.getCarWashServiceId());
+        return createFreeTimeIntervals(bookings, carWashService.getDuration());
+    }
+
+    private List<Booking> getBookingsOnDay(LocalDate day) {
+        return bookingRepository.findAll(
+                findBookingByDay(day),
                 Sort.by(Booking_.WASHING_START_TIME)
         );
-        CarWashServiceFullDto carWashService = carWashServiceService.findById(bookingGetFreeTimesDto.getCarWashServiceId());
-        List<TimeInterval> intervals = new ArrayList<>();
-        LocalTime startIntervalFreeTime = WORKING_DAY_START_HOUR;
+    }
 
+    public List<TimeInterval> createFreeTimeIntervals(List<Booking> bookings, int duration) {
+        List<TimeInterval> intervals = new ArrayList<>();
+
+        LocalTime startIntervalFreeTime = WORKING_DAY_START_HOUR;
         for (Booking booking : bookings) {
             LocalTime washingStartTime = booking.getWashingStartTime().toLocalTime();
-            long washServiceDuration = round(carWashService.getDuration() * booking.getBox().getCoefficient());
+            long washServiceDuration = round(duration * booking.getBox().getCoefficient());
             LocalTime washingStartTimeMinusDuration = washingStartTime.minusMinutes(washServiceDuration);
             if (washingStartTimeMinusDuration.isAfter(startIntervalFreeTime)) {
                 intervals.add(new TimeInterval(startIntervalFreeTime, washingStartTimeMinusDuration));

@@ -2,9 +2,9 @@ package ru.lieague.carwash.exception;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@ResponseStatus(NOT_FOUND)
+@ResponseStatus(BAD_REQUEST)
 public class FreeBoxNotFoundException extends RuntimeException{
     public FreeBoxNotFoundException(String message) {
         super(message);

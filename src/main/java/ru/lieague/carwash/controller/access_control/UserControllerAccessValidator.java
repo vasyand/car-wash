@@ -16,10 +16,4 @@ public class UserControllerAccessValidator {
                 || user.getId().equals(id);
     }
 
-    public boolean canTheCurrentUserSetDiscount() {
-        UserSecurity user = getCurrentUser();
-        return user.getRole() == ADMIN
-                || user.getRole() == OPERATOR;
-    }
-
 }

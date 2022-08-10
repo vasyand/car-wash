@@ -12,6 +12,7 @@ import ru.lieague.carwash.service.BoxService;
 
 import static ru.lieague.carwash.controller.access_control.CurrentUserUtil.getCurrentUser;
 import static ru.lieague.carwash.model.BookingStatus.ACTIVE;
+import static ru.lieague.carwash.model.BookingStatus.NOT_CONFIRMED;
 import static ru.lieague.carwash.model.UserRole.*;
 
 @Component
@@ -29,12 +30,22 @@ public class BookingControllerAccessValidator {
                 || user.getId().equals(userId);
     }
 
-    public boolean thisBookingIsConfirmingCurrentUser(BookingConfirmStatusDto bookingConfirmStatusDto, Long id) {
+    public boolean thisBookingIsUpdatingCurrentUser(Long id) {
         BookingFullDto bookingFullDto = bookingService.findById(id);
         Long userId = bookingFullDto.getUserId();
         UserSecurity user = getCurrentUser();
         return user.getRole() == ADMIN
-                || user.getId().equals(bookingConfirmStatusDto.getUserId());
+                || (user.getId().equals(userId)
+                && bookingFullDto.getBookingStatus() == ACTIVE);
+    }
+
+    public boolean thisBookingIsConfirmingCurrentUser(BookingConfirmStatusDto bookingConfirmStatusDto, Long id) {
+        BookingFullDto bookingFullDto = bookingService.findById(id);
+        UserSecurity currentUser = getCurrentUser();
+        return currentUser.getRole() == ADMIN
+                || (currentUser.getId().equals(bookingConfirmStatusDto.getUserId())
+                && bookingFullDto.getUserId().equals(bookingConfirmStatusDto.getUserId())
+                && bookingFullDto.getBookingStatus() == NOT_CONFIRMED);
     }
 
     public boolean canTheCurrentUserChangeBookingStatus(Long id) {

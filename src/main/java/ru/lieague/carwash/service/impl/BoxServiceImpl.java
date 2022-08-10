@@ -68,7 +68,7 @@ public class BoxServiceImpl implements BoxService {
     @Transactional
     public Long delete(Long id) {
         Box box = findBoxByIdOrThrowException(id);
-        boxRepository.delete(box);
+        box.setWorked(false);
         return box.getId();
     }
 
