@@ -4,7 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import ru.lieague.carwash.model.dto.user.UserCreateDto;
-import ru.lieague.carwash.model.dto.user.UserFullDto;
+import ru.lieague.carwash.model.dto.user.UserGetDto;
+import ru.lieague.carwash.model.dto.user.UserSecurity;
 import ru.lieague.carwash.model.dto.user.UserUpdateDto;
 import ru.lieague.carwash.model.entity.User;
 
@@ -13,7 +14,9 @@ import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
 @Mapper(componentModel = SPRING, uses = BookingMapper.class)
 public interface UserMapper {
-    UserFullDto userToUserFullDto(User user);
+    UserGetDto userToUserGetDto(User user);
+
+    UserSecurity userToUserSecurityDto(User user);
 
     User userCreateDtoToUser(UserCreateDto userCreateDto);
 

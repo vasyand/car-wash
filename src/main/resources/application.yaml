@@ -12,7 +12,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
-    enabled: false
+    enabled: true
     schemas: public
 
 job:
@@ -21,3 +21,8 @@ job:
 booking:
   minutes-before-start-washing-if-user-has-not-confirmed-booking: 15
   minutes-after-creating-booking-without-confirming: 15
+
+
+secret-key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+access-token-expiration-days: 1
+refresh-token-expiration-weeks: 4

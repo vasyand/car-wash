@@ -9,6 +9,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
+import static javax.persistence.EnumType.*;
+
 @Entity
 @Getter
 @Setter
@@ -16,7 +18,7 @@ public class CarWashService {
 
     @Id
     private Long id;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private CarWashServiceType carWashServiceType;
     private Integer duration;
     private String description;

@@ -23,33 +23,33 @@ public class UserController {
     @ResponseStatus(OK)
     @GetMapping("/{id}")
     @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserViewThisUser(#id)")
-    public UserFullDto findById(@PathVariable Long id) {
+    public UserGetDto findById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
     @ResponseStatus(OK)
     @GetMapping
-    public Page<UserFullDto> findAll(Pageable pageable, UserFilter userFilter) {
+    public Page<UserGetDto> findAll(Pageable pageable, UserFilter userFilter) {
         return userService.findAll(pageable, userFilter);
     }
 
     @ResponseStatus(CREATED)
     @PostMapping
-    public UserFullDto create(@RequestBody UserCreateDto userCreateDto) {
+    public UserGetDto create(@RequestBody UserCreateDto userCreateDto) {
         return userService.save(userCreateDto);
     }
 
     @ResponseStatus(OK)
     @PutMapping("/{id}")
     @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserViewThisUser(#id)")
-    public UserFullDto update(@RequestBody UserUpdateDto userUpdateDto,
+    public UserGetDto update(@RequestBody UserUpdateDto userUpdateDto,
                              @PathVariable Long id) {
         return userService.update(userUpdateDto, id);
     }
 
     @ResponseStatus(OK)
     @PutMapping("/{id}/role")
-    public UserFullDto changeUserRole(@RequestBody UserChangeRoleDto userChangeRoleDto,
+    public UserGetDto changeUserRole(@RequestBody UserChangeRoleDto userChangeRoleDto,
                                       @PathVariable Long id) {
         return userService.changeRole(userChangeRoleDto, id);
     }
@@ -57,7 +57,7 @@ public class UserController {
     @ResponseStatus(OK)
     @PutMapping("/{id}/discount")
     @PreAuthorize("@userControllerAccessValidator.canTheCurrentUserSetDiscount()")
-    public UserFullDto setDiscount(@RequestBody @Valid UserSetDiscountDto userSetDiscountDto,
+    public UserGetDto setDiscount(@RequestBody @Valid UserSetDiscountDto userSetDiscountDto,
                                    @PathVariable Long id) {
         return userService.setDiscount(userSetDiscountDto, id);
     }

@@ -3,7 +3,7 @@ package ru.lieague.carwash.controller.access_control;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.lieague.carwash.model.dto.box.BoxFullDto;
-import ru.lieague.carwash.model.dto.user.UserFullDto;
+import ru.lieague.carwash.model.dto.user.UserSecurity;
 import ru.lieague.carwash.service.BoxService;
 
 import static ru.lieague.carwash.controller.access_control.CurrentUserUtil.getCurrentUser;
@@ -19,7 +19,7 @@ public class BoxControllerAccessValidator {
     public boolean canTheCurrentUserViewThisBox(Long id) {
         BoxFullDto box = boxService.findById(id);
         Long userId = box.getOperatorId();
-        UserFullDto user = getCurrentUser();
+        UserSecurity user = getCurrentUser();
         return user.getRole() == ADMIN
                 || (user.getRole() == OPERATOR && user.getId().equals(userId));
     }

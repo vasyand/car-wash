@@ -3,9 +3,11 @@ package ru.lieague.carwash.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.lieague.carwash.exception.EntityNotFoundException;
 import ru.lieague.carwash.mapper.UserMapper;
+import ru.lieague.carwash.model.dto.PasswordRecoveryDto;
 import ru.lieague.carwash.model.dto.user.*;
 import ru.lieague.carwash.model.entity.User;
 import ru.lieague.carwash.model.filter.UserFilter;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 import static ru.lieague.carwash.model.UserRole.USER;
+import static ru.lieague.carwash.specification.UserSpecification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,29 +29,41 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
-    public UserFullDto findById(Long id) {
-        return userMapper.userToUserFullDto(findUserByIdOrThrowException(id));
+    public UserGetDto findById(Long id) {
+        return userMapper.userToUserGetDto(findUserByIdOrThrowException(id));
     }
 
     @Override
-    public Optional<UserFullDto> findByEmail(String email) {
+    public Optional<UserSecurity> findByEmail(String email) {
         return userRepository.findOne(UserSpecification.findByEmail(email))
-                .map(userMapper::userToUserFullDto);
+                .map(userMapper::userToUserSecurityDto);
     }
 
     @Override
-    public Page<UserFullDto> findAll(Pageable pageable, UserFilter userFilter) {
-        return userRepository.findAll(pageable)
-                .map(userMapper::userToUserFullDto);
+    public Page<UserGetDto> findAll(Pageable pageable, UserFilter userFilter) {
+        return userRepository.findAll(generateSpecification(userFilter), pageable)
+                .map(userMapper::userToUserGetDto);
     }
 
     @Override
-    public UserFullDto save(UserCreateDto userCreateDto) {
+    public UserGetDto save(UserCreateDto userCreateDto) {
         User user = userMapper.userCreateDtoToUser(userCreateDto);
         user.setRole(USER);
-        //TODO encode password
-        return userMapper.userToUserFullDto(userRepository.save(user));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userMapper.userToUserGetDto(userRepository.save(user));
+    }
+
+    @Override
+    public String setNewPassword(PasswordRecoveryDto passwordRecoveryDto, String email) {
+        User user = userRepository.findOne(UserSpecification.findByEmail(email))
+                .orElseThrow(
+                        () -> new EntityNotFoundException(format("Пользователя с почтой %s не существует", email))
+        );
+        user.setPassword(passwordEncoder.encode(passwordRecoveryDto.getPassword()));
+        return email;
     }
 
     @Override
@@ -56,30 +71,29 @@ public class UserServiceImpl implements UserService {
     public Long delete(Long id) {
         User user = findUserByIdOrThrowException(id);
         user.setEnabled(false);
-        userRepository.save(user);
         return user.getId();
     }
 
     @Override
-    public UserFullDto changeRole(UserChangeRoleDto userChangeRoleDto, Long id) {
+    public UserGetDto changeRole(UserChangeRoleDto userChangeRoleDto, Long id) {
         User user = findUserByIdOrThrowException(id);
         user.setRole(userChangeRoleDto.getRole());
-        return userMapper.userToUserFullDto(userRepository.save(user));
+        return userMapper.userToUserGetDto(userRepository.save(user));
     }
 
     @Override
-    public UserFullDto setDiscount(UserSetDiscountDto userSetDiscountDto, Long id) {
+    public UserGetDto setDiscount(UserSetDiscountDto userSetDiscountDto, Long id) {
         User user = findUserByIdOrThrowException(id);
         user.setDiscount(userSetDiscountDto.getDiscount());
-        return userMapper.userToUserFullDto(userRepository.save(user));
+        return userMapper.userToUserGetDto(userRepository.save(user));
     }
 
     @Override
     @Transactional
-    public UserFullDto update(UserUpdateDto userUpdateDto, Long id) {
+    public UserGetDto update(UserUpdateDto userUpdateDto, Long id) {
         User user = findUserByIdOrThrowException(id);
         userMapper.userUpdateDtoMergeWithUser(userUpdateDto, user);
-        return userMapper.userToUserFullDto(userRepository.save(user));
+        return userMapper.userToUserGetDto(userRepository.save(user));
     }
 
     private User findUserByIdOrThrowException(Long id) {

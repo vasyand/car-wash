@@ -8,6 +8,8 @@ import ru.lieague.carwash.model.BookingStatus;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.EnumType.*;
+
 @Entity
 @Getter
 @Setter
@@ -18,7 +20,7 @@ public class Booking {
     private LocalDateTime washingStartTime;
     private LocalDateTime washingEndTime;
     private Double cost;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private BookingStatus bookingStatus;
 
     @CreationTimestamp

@@ -6,34 +6,33 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.lieague.carwash.exception.EntityNotFoundException;
+import ru.lieague.carwash.exception.FreeBoxNotFoundException;
 import ru.lieague.carwash.mapper.BookingMapper;
 import ru.lieague.carwash.model.TimeInterval;
 import ru.lieague.carwash.model.dto.booking.*;
 import ru.lieague.carwash.model.dto.box.BoxFullDto;
 import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceFullDto;
-import ru.lieague.carwash.model.dto.user.UserFullDto;
+import ru.lieague.carwash.model.dto.user.UserGetDto;
 import ru.lieague.carwash.model.entity.Booking;
 import ru.lieague.carwash.model.entity.Booking_;
 import ru.lieague.carwash.model.entity.Box;
+import ru.lieague.carwash.model.entity.PaymentStatistic;
 import ru.lieague.carwash.model.filter.BookingFilter;
 import ru.lieague.carwash.repository.BookingRepository;
-import ru.lieague.carwash.service.BookingService;
-import ru.lieague.carwash.service.BoxService;
-import ru.lieague.carwash.service.CarWashServiceService;
-import ru.lieague.carwash.service.UserService;
+import ru.lieague.carwash.service.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 import static java.lang.String.format;
 import static ru.lieague.carwash.Constants.WORKING_DAY_END_HOUR;
 import static ru.lieague.carwash.Constants.WORKING_DAY_START_HOUR;
 import static ru.lieague.carwash.model.BookingStatus.*;
+import static ru.lieague.carwash.specification.BookingSpecification.*;
 import static ru.lieague.carwash.specification.BookingSpecification.findBookingByDay;
 
 @Service
@@ -43,6 +42,8 @@ public class BookingServiceImpl implements BookingService {
     private final BoxService boxService;
     private final UserService userService;
     private final CarWashServiceService carWashServiceService;
+
+    private final PaymentStatisticService paymentStatisticService;
     private final BookingMapper bookingMapper;
 
     @Override
@@ -52,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Page<BookingFullDto> findAll(Pageable pageable, BookingFilter bookingFilter) {
-        return bookingRepository.findAll(pageable)
+        return bookingRepository.findAll(generateSpecification(bookingFilter), pageable)
                 .map(bookingMapper::bookingToBookingFullDto);
     }
 
@@ -71,9 +72,20 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingFullDto changeStatus(BookingChangeStatusDto bookingChangeStatusDto, Long id) {
         Booking booking = findBookingByIdOrThrowException(id);
         booking.setBookingStatus(bookingChangeStatusDto.getBookingStatus());
+        if (bookingChangeStatusDto.getBookingStatus() == PAID) {
+            paymentStatisticService.save(new PaymentStatistic(
+                    null,
+                    LocalDateTime.now(),
+                    booking.getCost(),
+                    booking.getBox(),
+                    booking.getCarWashService(),
+                    booking.getUser()
+            ));
+        }
         return bookingMapper.bookingToBookingFullDto(bookingRepository.save(booking));
     }
 
@@ -116,10 +128,15 @@ public class BookingServiceImpl implements BookingService {
     public BookingFullDto update(BookingUpdateDto bookingUpdateDto, Long id) {
         Booking oldBooking = findBookingByIdOrThrowException(id);
         oldBooking.setBookingStatus(CANCELED);
-        bookingRepository.save(oldBooking);
-        Booking newBooking = createBooking(bookingMapper.bookingUpdateDtoToBookingCreateDto(bookingUpdateDto));
-        newBooking.setId(id);
-        return bookingMapper.bookingToBookingFullDto(bookingRepository.save(newBooking));
+        bookingRepository.saveAndFlush(oldBooking);
+        try {
+            Booking newBooking = createBooking(bookingMapper.bookingUpdateDtoToBookingCreateDto(bookingUpdateDto));
+            newBooking.setId(id);
+            return bookingMapper.bookingToBookingFullDto(bookingRepository.save(newBooking));
+        } catch (FreeBoxNotFoundException e) {
+            oldBooking.setBookingStatus(ACTIVE);
+            return bookingMapper.bookingToBookingFullDto(bookingRepository.save(oldBooking));
+        }
     }
 
     @Override
@@ -132,7 +149,7 @@ public class BookingServiceImpl implements BookingService {
 
     private Booking createBooking(BookingCreateDto bookingCreateDto) {
         CarWashServiceFullDto carWashServiceDto = carWashServiceService.findById(bookingCreateDto.getCarWashServiceId());
-        UserFullDto userDto = userService.findById(bookingCreateDto.getUserId());
+        UserGetDto userDto = userService.findById(bookingCreateDto.getUserId());
         BoxFullDto boxDto = boxService
                 .findTheBestBoxForCarWashServiceAtTime(
                         carWashServiceDto.getDuration(), bookingCreateDto.getBookingTime()

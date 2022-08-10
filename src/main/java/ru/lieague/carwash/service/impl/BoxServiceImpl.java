@@ -18,9 +18,9 @@ import ru.lieague.carwash.service.BoxService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static java.lang.String.format;
+import static ru.lieague.carwash.specification.BoxSpecification.generateSpecification;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class BoxServiceImpl implements BoxService {
 
     @Override
     public Page<BoxFullDto> findAll(Pageable pageable, BoxFilter boxFilter) {
-        return boxRepository.findAll(pageable)
+        return boxRepository.findAll(generateSpecification(boxFilter), pageable)
                 .map(boxMapper::boxToBoxFullDto);
     }
 

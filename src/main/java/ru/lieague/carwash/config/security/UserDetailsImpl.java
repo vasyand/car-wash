@@ -2,49 +2,53 @@ package ru.lieague.carwash.config.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.lieague.carwash.model.dto.user.UserFullDto;
+import ru.lieague.carwash.model.dto.user.UserSecurity;
 
 import java.util.Collection;
 
 public class UserDetailsImpl implements UserDetails {
-    private UserFullDto userFullDto;
+    private final UserSecurity user;
+
+    public UserDetailsImpl(UserSecurity user) {
+        this.user = user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
-    public UserFullDto getUser() {
-        return userFullDto;
+    public UserSecurity getUser() {
+        return user;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return user.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return user.isEnabled();
     }
 }

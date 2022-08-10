@@ -13,10 +13,12 @@ import ru.lieague.carwash.model.entity.CarWashService;
 import ru.lieague.carwash.model.filter.CarWashServiceFilter;
 import ru.lieague.carwash.repository.CarWashServiceRepository;
 import ru.lieague.carwash.service.CarWashServiceService;
+import ru.lieague.carwash.specification.CarWashServiceSpecification;
 
 import javax.transaction.Transactional;
 
 import static java.lang.String.format;
+import static ru.lieague.carwash.specification.CarWashServiceSpecification.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class CarWashServiceServiceImpl implements CarWashServiceService {
 
     @Override
     public Page<CarWashServiceFullDto> findAll(Pageable pageable, CarWashServiceFilter carWashServiceFilter) {
-        return carWashServiceRepository.findAll(pageable)
+        return carWashServiceRepository.findAll(generateSpecification(carWashServiceFilter), pageable)
                 .map(carWashServiceMapper::carWashServiceToCarWashServiceFullDto);
     }
 

@@ -1,6 +1,7 @@
 package ru.lieague.carwash.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.lieague.carwash.model.entity.Box;
@@ -8,7 +9,7 @@ import ru.lieague.carwash.model.entity.Box;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface BoxRepository extends JpaRepository<Box, Long> {
+public interface BoxRepository extends JpaRepository<Box, Long>, JpaSpecificationExecutor<Box> {
 
     /**
      * Запрос сначала ищет боксы, которые не смогут выполнить данную услугу во время {@code time},

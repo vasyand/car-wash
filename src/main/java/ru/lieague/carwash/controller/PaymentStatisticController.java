@@ -26,7 +26,7 @@ public class PaymentStatisticController {
 
     @ResponseStatus(OK)
     @GetMapping("/profit")
-    public Double findAll(@RequestBody PaymentStatisticsGetProfitDto paymentStatisticsGetProfitDto) {
+    public Double getProfit(@RequestBody PaymentStatisticsGetProfitDto paymentStatisticsGetProfitDto) {
         return paymentStatisticService.getProfitBetweenDates(paymentStatisticsGetProfitDto);
     }
 
