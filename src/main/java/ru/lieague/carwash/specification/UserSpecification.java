@@ -1,19 +1,11 @@
 package ru.lieague.carwash.specification;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.lieague.carwash.model.entity.Booking;
-import ru.lieague.carwash.model.entity.Booking_;
 import ru.lieague.carwash.model.entity.User;
 import ru.lieague.carwash.model.entity.User_;
 import ru.lieague.carwash.model.filter.UserFilter;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import static org.springframework.data.jpa.domain.Specification.where;
-import static ru.lieague.carwash.model.BookingStatus.*;
 
 public class UserSpecification {
 
@@ -50,6 +42,5 @@ public class UserSpecification {
         if (email == null) return null;
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.EMAIL), email);
     }
-
 
 }

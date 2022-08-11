@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserGetDto findById(Long id) {
-        return userMapper.userToUserGetDto(userRepository.save(findUserByIdOrThrowException(id)));
+        return userMapper.userToUserGetDto(findUserByIdOrThrowException(id));
     }
 
     @Override
