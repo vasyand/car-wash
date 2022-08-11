@@ -21,7 +21,7 @@ class BookingRepositoryTest {
     private final static LocalDateTime TEST_DATE = LocalDateTime.of(2022, 8, 15, 13, 20);
     private final static int MINUTES_BEFORE_START_WASHING_IF_USER_HAS_NOT_CONFIRMED_BOOKING = 15;
     private final static int MINUTES_AFTER_CREATING_BOOKING_WITHOUT_CONFIRMING = 15;
-    private final static int QUANTITY_OF_CANDIDATES_FOR_CANCELLING_AT_TEST_DATE = 2;
+    private final static int QUANTITY_OF_CANDIDATES_FOR_CANCELLING_AT_TEST_DATE = 1;
     @Autowired
     private BookingRepository bookingRepository;
 
