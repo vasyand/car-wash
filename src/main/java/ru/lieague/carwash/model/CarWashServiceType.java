@@ -1,5 +1,8 @@
 package ru.lieague.carwash.model;
 
 public enum CarWashServiceType {
-    LUXE
+    FULL,
+    EXPRESS,
+    ENGINE,
+    SALON
 }
