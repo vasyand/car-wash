@@ -16,10 +16,12 @@ import static javax.persistence.EnumType.*;
 public class Booking {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime washingStartTime;
     private LocalDateTime washingEndTime;
     private Double cost;
+
     @Enumerated(STRING)
     private BookingStatus bookingStatus;
 
@@ -27,16 +29,16 @@ public class Booking {
     @Column(name = "create_date")
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "box_id")
     private Box box;
 
-    @ManyToOne
-    @JoinColumn(name = "wash_service_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_wash_service_id")
     private CarWashService carWashService;
 
 }

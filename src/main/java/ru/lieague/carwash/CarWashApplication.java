@@ -5,6 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.lieague.carwash.model.entity.Box;
 import ru.lieague.carwash.repository.BoxRepository;
 import ru.lieague.carwash.service.BoxService;
@@ -21,13 +23,5 @@ public class CarWashApplication {
 	}
 
 
-//	@Bean
-//	CommandLineRunner run() {
-//		return args -> {
-//			LocalDateTime date = LocalDateTime.of(2022, 8, 5, 15,35,0);
-//			Box box = boxRepository.getBestBoxAtThisTime(15, date).get();
-//			System.out.println(box.getId());
-//		};
-//	}
 
 }

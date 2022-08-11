@@ -38,21 +38,21 @@ public class BookingController {
     @ResponseStatus(OK)
     @GetMapping("/info/free-time")
     public List<TimeInterval> getBookingFreeTimeIntervalsForCarWashServiceOnDay(
-            @RequestBody BookingGetFreeTimesDto bookingGetFreeTimesDto
+            @RequestBody @Valid BookingGetFreeTimesDto bookingGetFreeTimesDto
             ) {
         return bookingService.getBookingFreeTimeIntervalsForCarWashServiceOnDay(bookingGetFreeTimesDto);
     }
 
     @ResponseStatus(CREATED)
     @PostMapping
-    public BookingFullDto create(@RequestBody BookingCreateDto bookingCreateDto) {
+    public BookingFullDto create(@RequestBody @Valid BookingCreateDto bookingCreateDto) {
         return bookingService.save(bookingCreateDto);
     }
 
     @ResponseStatus(OK)
     @PutMapping("/{id}")
     @PreAuthorize("@bookingControllerAccessValidator.thisBookingIsUpdatingCurrentUser(#id)")
-    public BookingFullDto update(@RequestBody BookingUpdateDto bookingUpdateDto,
+    public BookingFullDto update(@RequestBody @Valid BookingUpdateDto bookingUpdateDto,
                                     @PathVariable Long id) {
         return bookingService.update(bookingUpdateDto, id);
     }

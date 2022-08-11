@@ -35,7 +35,7 @@ public interface BoxRepository extends JpaRepository<Box, Long>, JpaSpecificatio
             "           or (time_pl_interval(:time, make_interval(secs \\:= box.coefficient * :duration * 60)) > box.end_working)" +
             "           or (timestamp_pl_interval(:time, make_interval(secs \\:= box.coefficient * :duration * 60)) between b.washing_start_time and b.washing_end_time)" +
             "           or (:time between b.washing_start_time and b.washing_end_time))))" +
-            "order by box.coefficient desc " +
+            "order by box.coefficient asc " +
             "limit 1")
     Optional<Box> getBestBoxAtThisTime(@Param("duration") Integer standardDuration,
                                        @Param("time") LocalDateTime time);

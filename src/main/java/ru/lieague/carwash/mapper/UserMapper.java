@@ -12,7 +12,10 @@ import ru.lieague.carwash.model.entity.User;
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 import static org.mapstruct.NullValuePropertyMappingStrategy.IGNORE;
 
-@Mapper(componentModel = SPRING, uses = BookingMapper.class)
+@Mapper(componentModel = SPRING, uses = {
+        BookingMapper.class,
+        PaymentStatisticMapper.class
+})
 public interface UserMapper {
     UserGetDto userToUserGetDto(User user);
 
@@ -23,7 +26,6 @@ public interface UserMapper {
     @Mapping(target = "firstName", nullValuePropertyMappingStrategy = IGNORE)
     @Mapping(target = "middleName", nullValuePropertyMappingStrategy = IGNORE)
     @Mapping(target = "lastName", nullValuePropertyMappingStrategy = IGNORE)
-    @Mapping(target = "mobile", nullValuePropertyMappingStrategy = IGNORE)
     User userUpdateDtoMergeWithUser(UserUpdateDto userUpdateDto,
                                     @MappingTarget User user);
 }

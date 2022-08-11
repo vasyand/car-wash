@@ -4,26 +4,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 @Getter
 @Setter
 public class BoxCreateDto {
 
-    @NotBlank
+    @NotNull
     private String name;
 
-    @NotBlank
+    @NotNull
     private Long operatorId;
 
-    @NotBlank
+    @NotNull
     @Min(0)
     private Double coefficient;
 
-    @NotBlank
+    @NotNull
     private LocalTime startWorking;
 
-    @NotBlank
+    @NotNull
     private LocalTime endWorking;
 }

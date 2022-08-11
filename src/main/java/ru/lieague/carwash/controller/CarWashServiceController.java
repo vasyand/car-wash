@@ -11,6 +11,8 @@ import ru.lieague.carwash.model.dto.car_wash_service.CarWashServiceUpdateDto;
 import ru.lieague.carwash.model.filter.CarWashServiceFilter;
 import ru.lieague.carwash.service.CarWashServiceService;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -35,13 +37,13 @@ public class CarWashServiceController {
 
     @ResponseStatus(CREATED)
     @PostMapping
-    public CarWashServiceFullDto create(@RequestBody CarWashServiceCreateDto carWashServiceCreateDto) {
+    public CarWashServiceFullDto create(@RequestBody @Valid CarWashServiceCreateDto carWashServiceCreateDto) {
         return carWashServiceService.save(carWashServiceCreateDto);
     }
 
     @ResponseStatus(OK)
     @PutMapping("/{id}")
-    public CarWashServiceFullDto update(@RequestBody CarWashServiceUpdateDto carWashServiceUpdateDto,
+    public CarWashServiceFullDto update(@RequestBody @Valid CarWashServiceUpdateDto carWashServiceUpdateDto,
                              @PathVariable Long id) {
         return carWashServiceService.update(carWashServiceUpdateDto, id);
     }

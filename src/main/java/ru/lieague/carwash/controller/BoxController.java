@@ -11,6 +11,8 @@ import ru.lieague.carwash.model.dto.box.BoxUpdateDto;
 import ru.lieague.carwash.model.filter.BoxFilter;
 import ru.lieague.carwash.service.BoxService;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -35,13 +37,13 @@ public class BoxController {
 
     @ResponseStatus(CREATED)
     @PostMapping
-    public BoxFullDto create(@RequestBody BoxCreateDto boxCreateDto) {
+    public BoxFullDto create(@RequestBody @Valid BoxCreateDto boxCreateDto) {
         return boxService.save(boxCreateDto);
     }
 
     @ResponseStatus(OK)
     @PutMapping("/{id}")
-    public BoxFullDto update(@RequestBody BoxUpdateDto boxUpdateDto,
+    public BoxFullDto update(@RequestBody @Valid BoxUpdateDto boxUpdateDto,
                              @PathVariable Long id) {
         return boxService.update(boxUpdateDto, id);
     }

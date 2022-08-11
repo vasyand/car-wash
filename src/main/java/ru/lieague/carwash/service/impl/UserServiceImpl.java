@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.lieague.carwash.exception.EntityNotFoundException;
 import ru.lieague.carwash.mapper.UserMapper;
-import ru.lieague.carwash.model.dto.PasswordRecoveryDto;
 import ru.lieague.carwash.model.dto.user.*;
 import ru.lieague.carwash.model.entity.User;
 import ru.lieague.carwash.model.filter.UserFilter;
@@ -28,7 +27,6 @@ import static ru.lieague.carwash.specification.UserSpecification.*;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -54,16 +52,6 @@ public class UserServiceImpl implements UserService {
         user.setRole(USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.userToUserGetDto(userRepository.save(user));
-    }
-
-    @Override
-    public String setNewPassword(PasswordRecoveryDto passwordRecoveryDto, String email) {
-        User user = userRepository.findOne(UserSpecification.findByEmail(email))
-                .orElseThrow(
-                        () -> new EntityNotFoundException(format("Пользователя с почтой %s не существует", email))
-        );
-        user.setPassword(passwordEncoder.encode(passwordRecoveryDto.getPassword()));
-        return email;
     }
 
     @Override

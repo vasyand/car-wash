@@ -14,18 +14,15 @@ import java.util.List;
 public class Box {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private Double coefficient;
+    private LocalTime startWorking;
+    private LocalTime endWorking;
+    private boolean isWorked;
 
     @OneToOne
     private User operator;
-
-    private Double coefficient;
-
-    private LocalTime startWorking;
-
-    private LocalTime endWorking;
-
-    private boolean isWorked;
 
 }

@@ -9,6 +9,8 @@ import ru.lieague.carwash.model.dto.payment_statistic.PaymentStatisticsGetProfit
 import ru.lieague.carwash.model.filter.PaymentStatisticFilter;
 import ru.lieague.carwash.service.PaymentStatisticService;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -26,7 +28,7 @@ public class PaymentStatisticController {
 
     @ResponseStatus(OK)
     @GetMapping("/profit")
-    public Double getProfit(@RequestBody PaymentStatisticsGetProfitDto paymentStatisticsGetProfitDto) {
+    public Double getProfit(@RequestBody @Valid PaymentStatisticsGetProfitDto paymentStatisticsGetProfitDto) {
         return paymentStatisticService.getProfitBetweenDates(paymentStatisticsGetProfitDto);
     }
 

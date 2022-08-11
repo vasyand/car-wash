@@ -5,11 +5,12 @@ import lombok.Setter;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class DiscountSetMaxDto {
-    @NotBlank
+    @NotNull
     @Max(1)
     private Double max;
 }

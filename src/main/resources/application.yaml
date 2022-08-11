@@ -1,3 +1,6 @@
+server:
+  port: 8081
+
 spring:
   datasource:
     username: test
@@ -7,13 +10,16 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   flyway:
     enabled: true
     schemas: public
+
+encoder:
+  strength-password: 10
 
 job:
   rate-for-check-booking-job: 300000
@@ -24,5 +30,7 @@ booking:
 
 
 secret-key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-access-token-expiration-days: 1
+access-token-expiration-days: 2
 refresh-token-expiration-weeks: 4
+
+

@@ -15,6 +15,7 @@ public class CarWashServiceUpdateDto {
 
     @Min(0)
     private Double cost;
+
     private CarWashServiceType carWashServiceType;
     private String description;
 }

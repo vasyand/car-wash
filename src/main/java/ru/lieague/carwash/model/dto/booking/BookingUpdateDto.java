@@ -3,14 +3,14 @@ package ru.lieague.carwash.model.dto.booking;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class BookingUpdateDto {
-    @NotBlank
+    @NotNull
     private LocalDateTime bookingTime;
-    @NotBlank
+    @NotNull
     private Long carWashServiceId;
 }

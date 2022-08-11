@@ -17,19 +17,20 @@ import java.time.LocalDateTime;
 public class PaymentStatistic {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime paymentTime;
     private Double washingCost;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "box_id")
     private Box box;
 
-    @ManyToOne
-    @JoinColumn(name = "wash_service_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_wash_service_id")
     private CarWashService carWashService;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }

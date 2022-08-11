@@ -5,7 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.lieague.carwash.model.dto.booking.BookingFullDto;
 import ru.lieague.carwash.model.dto.user.*;
+import ru.lieague.carwash.model.filter.BookingFilter;
 import ru.lieague.carwash.model.filter.UserFilter;
 import ru.lieague.carwash.service.UserService;
 
@@ -33,9 +35,10 @@ public class UserController {
         return userService.findAll(pageable, userFilter);
     }
 
+
     @ResponseStatus(CREATED)
     @PostMapping
-    public UserGetDto create(@RequestBody UserCreateDto userCreateDto) {
+    public UserGetDto create(@RequestBody @Valid UserCreateDto userCreateDto) {
         return userService.save(userCreateDto);
     }
 
@@ -49,7 +52,7 @@ public class UserController {
 
     @ResponseStatus(OK)
     @PutMapping("/{id}/role")
-    public UserGetDto changeUserRole(@RequestBody UserChangeRoleDto userChangeRoleDto,
+    public UserGetDto changeUserRole(@RequestBody @Valid UserChangeRoleDto userChangeRoleDto,
                                       @PathVariable Long id) {
         return userService.changeRole(userChangeRoleDto, id);
     }

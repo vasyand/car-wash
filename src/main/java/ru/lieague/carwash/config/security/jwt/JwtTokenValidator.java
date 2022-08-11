@@ -2,10 +2,12 @@ package ru.lieague.carwash.config.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -20,7 +22,10 @@ import static ru.lieague.carwash.Constants.BEARER_PARAMETER;
 
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenValidator {
+
+    private final UserDetailsService userDetailsService;
     @Value("${secret-key}")
     private String secretKey;
 
@@ -29,14 +34,15 @@ public class JwtTokenValidator {
         validateHeader(authorizationHeader);
         try {
             Claims claims = extractClaims(authorizationHeader);
-            String username = getUsername(claims);
+            String email = getUsername(claims);
             Set<SimpleGrantedAuthority> authorities = getAuthorities(claims);
             return new UsernamePasswordAuthenticationToken(
-                    username,
+                    userDetailsService.loadUserByUsername(email),
                     null,
                     authorities
             );
         } catch (JwtException e) {
+            System.out.println(e.getMessage());
             throw new MalformedJwtException(String.format("Can not authorize token: %s", authorizationHeader));
         }
 

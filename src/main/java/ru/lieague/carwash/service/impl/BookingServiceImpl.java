@@ -43,7 +43,6 @@ public class BookingServiceImpl implements BookingService {
     private final BoxService boxService;
     private final UserService userService;
     private final CarWashServiceService carWashServiceService;
-
     private final PaymentStatisticService paymentStatisticService;
     private final BookingMapper bookingMapper;
 
@@ -115,8 +114,8 @@ public class BookingServiceImpl implements BookingService {
 
     public List<TimeInterval> createFreeTimeIntervals(List<Booking> bookings, int duration) {
         List<TimeInterval> intervals = new ArrayList<>();
-
         LocalTime startIntervalFreeTime = WORKING_DAY_START_HOUR;
+
         for (Booking booking : bookings) {
             LocalTime washingStartTime = booking.getWashingStartTime().toLocalTime();
             long washServiceDuration = round(duration * booking.getBox().getCoefficient());
@@ -179,7 +178,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setCost(cost);
 
         LocalDateTime washingEndTime = bookingCreateDto.getBookingTime()
-                .plusMinutes(round(boxEntity.getCoefficient() * carWashServiceDto.getDuration()));
+                .plusMinutes(round(boxDto.getCoefficient() * carWashServiceDto.getDuration()));
         booking.setWashingEndTime(washingEndTime);
 
         return booking;

@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.lieague.carwash.model.CarWashServiceType;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import static javax.persistence.EnumType.*;
 
@@ -17,10 +14,12 @@ import static javax.persistence.EnumType.*;
 public class CarWashService {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(STRING)
-    private CarWashServiceType carWashServiceType;
     private Integer duration;
     private String description;
     private Double cost;
+    @Enumerated(STRING)
+    private CarWashServiceType carWashServiceType;
+
 }

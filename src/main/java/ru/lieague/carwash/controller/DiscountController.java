@@ -7,6 +7,8 @@ import ru.lieague.carwash.model.dto.discount.DiscountSetMaxDto;
 import ru.lieague.carwash.model.dto.discount.DiscountSetMinDto;
 import ru.lieague.carwash.service.DiscountService;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -23,13 +25,13 @@ public class DiscountController {
 
     @ResponseStatus(OK)
     @PutMapping("/set-min")
-    public DiscountFullDto setMin(@RequestBody DiscountSetMinDto discountSetMinDto) {
+    public DiscountFullDto setMin(@RequestBody @Valid DiscountSetMinDto discountSetMinDto) {
         return discountService.setMin(discountSetMinDto);
     }
 
     @ResponseStatus(OK)
     @PutMapping("/set-max")
-    public DiscountFullDto setMax(@RequestBody DiscountSetMaxDto discountSetMaxDto) {
+    public DiscountFullDto setMax(@RequestBody @Valid DiscountSetMaxDto discountSetMaxDto) {
         return discountService.setMax(discountSetMaxDto);
     }
 }

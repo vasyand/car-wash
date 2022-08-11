@@ -12,7 +12,6 @@ public class UserSecurity {
     private String middleName;
     private String lastName;
     private String email;
-    private String mobile;
     private String password;
     private Double discount;
     private UserRole role;

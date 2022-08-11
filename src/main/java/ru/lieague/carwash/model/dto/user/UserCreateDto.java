@@ -4,27 +4,25 @@ import lombok.Getter;
 import ru.lieague.carwash.validation.annotation.EmailIsNotExistInDataBase;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 public class UserCreateDto {
 
-    @NotBlank
+    @NotNull
     private String firstName;
 
-    @NotBlank
+    @NotNull
     private String middleName;
 
-    @NotBlank
+    @NotNull
     private String lastName;
 
+    @NotNull
     @Email
     @EmailIsNotExistInDataBase
     private String email;
 
-    @NotBlank
+    @NotNull
     private String password;
-
-    @NotBlank
-    private String mobile;
 }

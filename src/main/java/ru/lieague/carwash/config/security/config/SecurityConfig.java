@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.lieague.carwash.config.security.jwt.JwtEmailPasswordAuthFilter;
 import ru.lieague.carwash.config.security.jwt.JwtTokenFilter;
@@ -31,11 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenFilter jwtTokenFilter;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
-
-    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
@@ -43,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+        http
+                .csrf().disable();
         http
                 .authorizeRequests()
                 .antMatchers(
@@ -51,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/auth",
                         "/api/v1/recovery-password"
                 )
-                .anonymous()
+                .not().hasAnyRole(ADMIN.name(), OPERATOR.name(), USER.name())
                 .and()
                 .authorizeRequests()
                 .antMatchers(
@@ -68,13 +62,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         GET,
                         "/api/v1/bookings/{id}",
+                        "/api/v1/bookings/info/free-time",
                         "/api/v1/car-wash-services/**",
-                        "/api/v1/users/{id}")
+                        "/api/v1/users/{id}/**")
                 .authenticated()
                 .and()
                 .authorizeRequests()
                 .antMatchers(DELETE, "/api/v1/users/{id}")
-                .hasAnyRole(USER.name(), OPERATOR.name())
+                .hasRole(USER.name())
                 .and()
                 .authorizeRequests()
                 .antMatchers(GET, "/api/v1/boxes/{id}")

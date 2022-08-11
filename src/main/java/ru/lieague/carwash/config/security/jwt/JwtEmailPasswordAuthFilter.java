@@ -33,7 +33,7 @@ public class JwtEmailPasswordAuthFilter extends AbstractAuthenticationProcessing
 
             EmailPasswordAuthDto authRequest = parseToUsernamePasswordRequest(request);
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                    authRequest.getUsername(),
+                    authRequest.getEmail(),
                     authRequest.getPassword()
             );
             return authenticationManager.authenticate(auth);

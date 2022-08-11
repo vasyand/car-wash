@@ -2,6 +2,8 @@ package ru.lieague.carwash.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.lieague.carwash.model.UserRole;
 
 import javax.persistence.*;
@@ -16,12 +18,12 @@ import static javax.persistence.EnumType.*;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String middleName;
     private String lastName;
     private String email;
-    private String mobile;
     private String password;
     private Double discount;
     private boolean isEnabled;
@@ -33,5 +35,6 @@ public class User {
     private List<Booking> bookingList;
 
     @OneToMany(mappedBy = "user")
+    @Fetch(FetchMode.JOIN)
     private List<PaymentStatistic> paymentStatistics;
 }

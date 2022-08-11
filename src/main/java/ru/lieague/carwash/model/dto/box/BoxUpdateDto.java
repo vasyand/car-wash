@@ -16,6 +16,7 @@ public class BoxUpdateDto {
 
     @Min(0)
     private Double coefficient;
+
     private LocalTime startWorking;
     private LocalTime endWorking;
 }
